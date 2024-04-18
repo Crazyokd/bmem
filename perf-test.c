@@ -23,7 +23,7 @@ static void test_interleaved_fashion()
     end = clock();
 
     time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("Normal: Time spent: %f seconds\n", time_spent);
+    printf("Normal interleaved fashion: Time spent: %f seconds\n", time_spent);
 
     /* Bmem */
     begin = clock();
@@ -38,7 +38,7 @@ static void test_interleaved_fashion()
     end = clock();
 
     time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("Bmem: Time spent: %f seconds\n", time_spent);
+    printf("Bmem interleaved fashion: Time spent: %f seconds\n", time_spent);
 
     free(a);
 }
@@ -62,7 +62,7 @@ static void test_bulk_fashion()
     end = clock();
 
     time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("Normal: Time spent: %f seconds\n", time_spent);
+    printf("Normal bulk fashion: Time spent: %f seconds\n", time_spent);
 
     /* Bmem */
     begin = clock();
@@ -79,7 +79,7 @@ static void test_bulk_fashion()
     end = clock();
 
     time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("Bmem: Time spent: %f seconds\n", time_spent);
+    printf("Bmem bulk fashion: Time spent: %f seconds\n", time_spent);
 
     free(a);
 }
