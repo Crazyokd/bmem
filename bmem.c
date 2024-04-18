@@ -33,13 +33,13 @@ static bm_table_t *bm_table_create(bm_context_t *ctx, size_t s)
     *(bm_table_t **)pool = table;
     /* initialize table pool */
     table->pool = pool + sizeof(bm_table_t *);
-    for (int i = 0; i < ctx->iuc; i++) {
+    for (size_t i = 0; i < ctx->iuc; i++) {
         *(bm_index_t *)table->pool = i;
         table->pool += UNIT_SIZE(s);
     }
     table->pool = pool + sizeof(bm_table_t *);
     /* initialize table alloc */
-    for (int i = 1; i < ctx->iuc; i++) {
+    for (size_t i = 1; i < ctx->iuc; i++) {
         table->alloc->array[i] = i;
     }
     table->alloc->head = 1;
@@ -84,7 +84,7 @@ void bm_context_destroy(bm_context_t *ctx)
 {
     if (!ctx) return;
 
-    for (int i = 0; i < ctx->ctc; i++) {
+    for (uint32_t i = 0; i < ctx->ctc; i++) {
         bm_table_destroy(ctx->tables[i]);
     }
     free(ctx->tables);
@@ -95,7 +95,7 @@ void *bm_malloc(bm_context_t *ctx, size_t s)
 {
     if (!ctx || s == 0) return NULL;
     /* find table by t */
-    for (int i = 0; i < ctx->ctc; i++) {
+    for (uint32_t i = 0; i < ctx->ctc; i++) {
         if (ctx->tables[i]->unit_size == s) {
             if (ctx->tables[i]->alloc->head == ctx->tables[i]->alloc->tail) {
                 /* The memory pool has been exhausted */
@@ -151,7 +151,7 @@ void bm_free(bm_context_t *ctx, void *ptr)
     if (ctx == NULL || ptr == NULL) return;
 
     bm_index_t *idx_ptr = (bm_index_t *)(ptr - sizeof(bm_index_t));
-    for (int i = 0; i < ctx->ctc; i++) {
+    for (uint32_t i = 0; i < ctx->ctc; i++) {
         size_t offset = *idx_ptr * UNIT_SIZE(ctx->tables[i]->unit_size)
                       + sizeof(bm_index_t);
         if (ctx->tables[i]->pool + offset == ptr) {
