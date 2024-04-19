@@ -22,6 +22,9 @@ int main()
 # Target
 - allocate and release memory with O(1) complexity
 
+# Design
+![Design](design.png)
+
 # Roadmap
 - add performance test
 - support expansion automatically
