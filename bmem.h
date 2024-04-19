@@ -38,6 +38,6 @@ bm_context_t *bm_context_register(uint32_t max_table_cnt, size_t iuc,
 void bm_context_destroy(bm_context_t *ctx);
 void *bm_malloc(bm_context_t *ctx, size_t t);
 void bm_free(bm_context_t *ctx, void *ptr);
-void bm_free_s(bm_context_t *ctx, void *ptr, size_t s);
+void bm_free_s(void *ptr, size_t s);
 
 #endif

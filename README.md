@@ -3,18 +3,26 @@ batch memory - 批量内存
 
 # Usage
 ```c
-bm_context_t *ctx = bm_context_register(8, 1024, 1024);
-if (ctx == NULL) return -1;
-int *a = bm_malloc(ctx, sizeof(int));
-// now you can use a as a normal pointer
-bm_free_s(ctx, a, sizeof(int));
-bm_context_destroy(ctx);
+#include "bmem.h"
+
+int main()
+{
+    bm_context_t *ctx = bm_context_register(8, 1024, 1024);
+    if (ctx == NULL) return -1;
+    int *a = bm_malloc(ctx, sizeof(int));
+    bm_free_s(a, sizeof(int));
+
+    int *b = bm_malloc(ctx, sizeof(int));
+    bm_free(ctx, b);
+    bm_context_destroy(ctx);
+    return 0;
+}
 ```
 
 # Target
 - allocate and release memory with O(1) complexity
 
-# ROADMAP
+# Roadmap
 - add performance test
 - support expansion automatically
 - using hash for boosting table query speed

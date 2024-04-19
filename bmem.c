@@ -133,9 +133,9 @@ static void bm_free_t(bm_table_t *table, size_t idx)
     table->alloc->array[table->alloc->tail] = idx;
 }
 
-void bm_free_s(bm_context_t *ctx, void *ptr, size_t s)
+void bm_free_s(void *ptr, size_t s)
 {
-    if (ctx == NULL || ptr == NULL || s == 0) return;
+    if (ptr == NULL || s == 0) return;
     /* point to real start point */
     bm_index_t *idx_ptr = (bm_index_t *)(ptr - sizeof(bm_index_t));
     /* point to the address of table */
