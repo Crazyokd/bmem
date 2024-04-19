@@ -67,7 +67,7 @@ static void test_bulk_fashion()
     /* Bmem */
     begin = clock();
 
-    bm_context_t *ctx = bm_context_register(8, 1024, 1024);
+    bm_context_t *ctx = bm_context_register(8, ALLOC_CNT, ALLOC_CNT);
     for (uint32_t i = 0; i < ALLOC_CNT; i++) {
         a[i] = bm_malloc(ctx, sizeof(int));
     }
