@@ -47,6 +47,7 @@ static bm_table_t *bm_table_create(bm_context_t *ctx, size_t s)
 
     table->unit_cnt = ctx->iuc;
     table->unit_size = s;
+    table->next = NULL;
     return table;
 }
 
@@ -58,6 +59,14 @@ static void bm_table_destroy(bm_table_t *table)
     free(table->alloc->array);
     free(table->alloc);
     free(table);
+}
+
+static void bm_table_recursive_destroy(bm_table_t *table)
+{
+    if (!table) return;
+
+    bm_table_recursive_destroy(table->next);
+    bm_table_destroy(table);
 }
 
 bm_context_t *bm_context_register(uint32_t max_table_cnt, size_t iuc,
@@ -85,7 +94,7 @@ void bm_context_destroy(bm_context_t *ctx)
     if (!ctx) return;
 
     for (uint32_t i = 0; i < ctx->ctc; i++) {
-        bm_table_destroy(ctx->tables[i]);
+        bm_table_recursive_destroy(ctx->tables[i]);
     }
     free(ctx->tables);
     free(ctx);
@@ -94,30 +103,38 @@ void bm_context_destroy(bm_context_t *ctx)
 void *bm_malloc(bm_context_t *ctx, size_t s)
 {
     if (!ctx || s == 0) return NULL;
+
+    bm_table_t *table;
     /* find table by t */
     for (uint32_t i = 0; i < ctx->ctc; i++) {
         if (ctx->tables[i]->unit_size == s) {
-            if (ctx->tables[i]->alloc->head == ctx->tables[i]->alloc->tail) {
-                /* The memory pool has been exhausted */
-                /* todo: consider expansion */
-                return NULL; // now just do nothing
+            table = ctx->tables[i];
+            while (table->alloc->head == table->alloc->tail) {
+                if (table->next) table = table->next;
+                else {
+                    /* The memory pool has been exhausted */
+                    table->next = bm_table_create(ctx, s);
+                    if (!table->next) {
+                        return NULL;
+                    }
+                }
             }
             /* alloc memory */
             size_t offset =
-                ctx->tables[i]->alloc->array[ctx->tables[i]->alloc->head]
+                table->alloc->array[table->alloc->head]
                     * UNIT_SIZE(s)
                 + sizeof(bm_index_t);
-            ctx->tables[i]->alloc->head++;
-            if (ctx->tables[i]->alloc->head >= ctx->tables[i]->unit_cnt) {
+            table->alloc->head++;
+            if (table->alloc->head >= table->unit_cnt) {
                 /* unlikely */
-                ctx->tables[i]->alloc->head %= ctx->tables[i]->unit_cnt;
+                table->alloc->head %= table->unit_cnt;
             }
-            return ctx->tables[i]->pool + offset;
+            return table->pool + offset;
         }
     }
     /* here we will create table */
     if (ctx->ctc >= ctx->mtc) return NULL;
-    bm_table_t *table = bm_table_create(ctx, s);
+    table = bm_table_create(ctx, s);
     if (table) {
         ctx->tables[ctx->ctc++] = table;
         return table->pool + sizeof(bm_index_t);
@@ -150,14 +167,18 @@ void bm_free(bm_context_t *ctx, void *ptr)
 {
     if (ctx == NULL || ptr == NULL) return;
 
+    bm_table_t *table;
     bm_index_t *idx_ptr = (bm_index_t *)(ptr - sizeof(bm_index_t));
     for (uint32_t i = 0; i < ctx->ctc; i++) {
-        size_t offset = *idx_ptr * UNIT_SIZE(ctx->tables[i]->unit_size)
+        table = ctx->tables[i];
+        size_t offset = *idx_ptr * UNIT_SIZE(table->unit_size)
                       + sizeof(bm_index_t);
-        if (ctx->tables[i]->pool + offset == ptr) {
-            /* now we find the real table */
-            bm_free_t(ctx->tables[i], *idx_ptr);
-            break;
+        while (table->pool + offset != ptr) {
+            table = table->next;
+            if (!table) continue;
         }
+        /* now we find the real table */
+        bm_free_t(ctx->tables[i], *idx_ptr);
+        break;
     }
 }

@@ -21,6 +21,7 @@ typedef struct bm_table_s {
     size_t unit_cnt; /* current unit cnt of array */
     size_t unit_size; /* size of unit */
     alloc_queue_t *alloc; /* point to alloc_queue */
+    struct bm_table_s *next;
 } bm_table_t;
 
 typedef struct bm_context_s {
