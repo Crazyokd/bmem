@@ -26,7 +26,7 @@ int main()
 ![Design](design.png)
 
 # Roadmap
-- add performance test
-- support expansion automatically
-- using hash for boosting table query speed
-- support multithread
+- [x] add performance test
+- [x] support expansion automatically
+- [] using hash for boosting table query speed
+- [] support multithread
