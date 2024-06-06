@@ -28,7 +28,7 @@ static void test_interleaved_fashion()
     /* Bmem */
     begin = clock();
 
-    bm_context_t *ctx = bm_context_register(8, 1024, 1024);
+    bm_context_t *ctx = bm_context_register(8, 1024);
     for (uint32_t i = 0; i < ALLOC_CNT; i++) {
         a[i] = bm_malloc(ctx, sizeof(int));
         bm_free_s(a[i], sizeof(int));
@@ -67,7 +67,7 @@ static void test_bulk_fashion()
     /* Bmem */
     begin = clock();
 
-    bm_context_t *ctx = bm_context_register(8, ALLOC_CNT/4, ALLOC_CNT/4);
+    bm_context_t *ctx = bm_context_register(8, ALLOC_CNT/4);
     for (uint32_t i = 0; i < ALLOC_CNT; i++) {
         a[i] = bm_malloc(ctx, sizeof(int));
     }
@@ -111,7 +111,7 @@ static void test_bulk_fashion2()
     /* Bmem */
     begin = clock();
 
-    bm_context_t *ctx = bm_context_register(8, ALLOC_CNT/4, ALLOC_CNT/4);
+    bm_context_t *ctx = bm_context_register(8, ALLOC_CNT/4);
     for (uint32_t i = 0; i < ALLOC_CNT; i++) {
         a[i] = bm_malloc(ctx, sizeof(int));
         b[i] = bm_malloc(ctx, sizeof(double));

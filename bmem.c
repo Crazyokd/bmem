@@ -69,11 +69,9 @@ static void bm_table_recursive_destroy(bm_table_t *table)
     bm_table_destroy(table);
 }
 
-bm_context_t *bm_context_register(uint32_t max_table_cnt, size_t iuc,
-                                  size_t max_unit_cnt)
+bm_context_t *bm_context_register(uint32_t max_table_cnt, size_t iuc)
 {
     if (max_table_cnt == 0 || iuc == 0) return NULL;
-    if (iuc > max_unit_cnt) return NULL;
 
     bm_context_t *ctx = malloc(sizeof(bm_context_t));
     if (!ctx) return NULL;
@@ -84,7 +82,6 @@ bm_context_t *bm_context_register(uint32_t max_table_cnt, size_t iuc,
     }
     ctx->mtc = max_table_cnt;
     ctx->iuc = iuc;
-    ctx->muc = max_unit_cnt;
     ctx->ctc = 0;
     return ctx;
 }

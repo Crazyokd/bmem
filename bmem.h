@@ -26,7 +26,6 @@ typedef struct bm_table_s {
 
 typedef struct bm_context_s {
     size_t iuc; /* init unit cnt */
-    size_t muc; /* max unit cnt */
     uint32_t mtc; /* max table cnt */
     uint32_t ctc; /* current table cnt */
     bm_table_t **tables;
@@ -34,8 +33,7 @@ typedef struct bm_context_s {
 
 #define GET_SIZE_BY_TYPE(t_ptr) sizeof(*t_ptr)
 /* API */
-bm_context_t *bm_context_register(uint32_t max_table_cnt, size_t iuc,
-                                  size_t max_unit_cnt);
+bm_context_t *bm_context_register(uint32_t max_table_cnt, size_t iuc);
 void bm_context_destroy(bm_context_t *ctx);
 void *bm_malloc(bm_context_t *ctx, size_t t);
 void bm_free(bm_context_t *ctx, void *ptr);
