@@ -39,10 +39,10 @@ static bm_table_t *bm_table_create(bm_context_t *ctx, size_t s)
     }
     table->pool = pool + sizeof(bm_table_t *);
     /* initialize table alloc */
-    for (size_t i = 1; i < ctx->iuc; i++) {
+    for (size_t i = 0; i < ctx->iuc; i++) {
         table->alloc->array[i] = i;
     }
-    table->alloc->head = 1;
+    table->alloc->head = 0;
     table->alloc->tail = ctx->iuc - 1;
 
     table->unit_cnt = ctx->iuc;
