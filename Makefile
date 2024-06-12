@@ -1,6 +1,7 @@
 CFLAGS=-g -Wall -W -std=c99
 LDFLAGS=-L. -Wl,-R. -lbmem -static
 
+.PHONY: clean all
 all: libbmem.a libbmem.so main perf-test
 
 main: main.o
@@ -9,13 +10,11 @@ main: main.o
 perf-test: perf-test.o
 	$(CC) $^ -o $@ $(CFLAGS) $(LDFLAGS)
 
-libbmem.so: bmem.c
+libbmem.so: bmem.c bmem.h
 	$(CC) -fPIC -shared $^ -o $@ $(CFLAGS)
 
-libbmem.a: bmem.o
+libbmem.a: bmem.o bmem.h
 	$(AR) rcs $@ $^
-
-.PHONY: clean
 
 clean:
 	rm -f *.o main perf-test libbmem.a libbmem.so
