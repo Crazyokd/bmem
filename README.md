@@ -28,5 +28,5 @@ int main()
 # Roadmap
 - [x] add performance test
 - [x] support expansion automatically
-- [] using hash for boosting table query speed
-- [] support multithread
+- [ ] using hash for boosting table query speed
+- [ ] support multithread
